@@ -32,7 +32,7 @@ if prompt := st.chat_input("Zaidiii se poocho..."):
         with st.spinner("Soch rahi hun..."):
             try:
                 # Sabse stable model use kar rahe
-                model = genai.GenerativeModel('gemini-1.5-flash-latest') 
+                model = genai.GenerativeModel('gemini-1.0-pro') 
                 response = model.generate_content(prompt)
                 st.write(response.text)
                 st.session_state.messages.append({"role": "assistant", "content": response.text})
