@@ -1,48 +1,41 @@
 import streamlit as st
 import google.generativeai as genai
 
-# Page setup
-st.set_page_config(page_title="Zaidiii AI", page_icon="🤖", layout="centered")
-st.title("🤖 Zaidiii AI")
-st.caption("Tumhari Family Special AI Assistant | ChatGPT Style")
+st.set_page_config(page_title="Zaidiii AI", page_icon="✨")
+st.title("✨ Zaidiii AI")
+st.caption("ChatGPT Style AI")
 
-# API Key connect
-genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+# 1. Key check karo
+try:
+    API_KEY = st.secrets["GOOGLE_API_KEY"]
+    genai.configure(api_key=API_KEY)
+    st.sidebar.success("API Key Connected ✅")
+except Exception as e:
+    st.error(f"API Key ka masla hai: {e}")
+    st.stop()
 
-# Chat history ke liye
+# 2. Chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Sidebar - Clear Chat ka button
-with st.sidebar:
-    st.header("Settings")
-    if st.button("🗑️ Nayi Chat Shuru Karo"):
-        st.session_state.messages = []
-        st.rerun()
-
-# Pehle wali chat dikhao
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+        st.write(message["content"])
 
-# Naya sawal wala box
-if prompt := st.chat_input("Zaidiii se kuch bhi poocho..."):
-    
-    # User ka message add karo
+# 3. Chat input
+if prompt := st.chat_input("Zaidiii se poocho..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
-        st.markdown(prompt)
+        st.write(prompt)
 
-    # AI ka jawab
     with st.chat_message("assistant"):
-        with st.spinner("Zaidiii soch rahi hai..."):
+        with st.spinner("Soch rahi hun..."):
             try:
-                model = genai.GenerativeModel('gemini-1.0-pro')
+                # Sabse stable model use kar rahe
+                model = genai.GenerativeModel('gemini-pro') 
                 response = model.generate_content(prompt)
-                st.markdown(response.text)
-                
-                # AI ka jawab bhi save karo
+                st.write(response.text)
                 st.session_state.messages.append({"role": "assistant", "content": response.text})
-                
             except Exception as e:
-                st.error(f"Masla aa gaya: {e}")
+                st.error(f"Chat ka Error: {e}")
+                st.info("Hal: 1. Key nayi banao 2. 2 min wait karo 3. `gemini-pro` se `gemini-1.0-pro` try karo")
