@@ -1,33 +1,71 @@
 import streamlit as st
 from groq import Groq
 
-st.set_page_config(page_title="Zaidiii", page_icon="🤖", layout="wide")
+st.set_page_config(page_title="Zaidiii", page_icon="🤖", layout="centered")
 
-# AESTHETIC BACKGROUND
+# TUMHARI PIC BACKGROUND WALA CSS
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    html, body, [class*="st"] { font-family: 'Inter', sans-serif; }
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+    
+    html, body, [class*="st"] { font-family: 'Poppins', sans-serif; }
 
-.main {
-        background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+    /* PURA BACKGROUND TUMHARI PIC */
+   .stApp {
+        background-image: url("https://i.ibb.co/your-bike-pic.jpg"); /* pehle pic upload karo imgbb pe */
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
     }
 
-    [data-testid="stSidebar"] {
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(10px);
+    /* UPAR KAALA TRANSPARENT LAYER */
+   .stApp::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: -1;
     }
 
-.welcome-box {
-        background: rgba(255, 255, 255, 0.8);
+    /* WELCOME BOX GLASS EFFECT */
+  .welcome-box {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(20px);
+        border-radius: 25px;
+        padding: 30px 20px;
+        text-align: center;
+        margin: 20px 10px;
+        border: 1px solid rgba(255,255,255,0.2);
+        color: white;
+    }
+  .welcome-box h1 {
+        color: white;
+        font-size: 28px;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    /* CHAT BUBBLES */
+    [data-testid="stChatMessage"] {
+        background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(15px);
         border-radius: 20px;
-        padding: 40px;
-        text-align: center;
-        margin: 20px auto;
-        max-width: 700px;
-        border: 1px solid rgba(255,255,255,0.3);
+        padding: 15px;
+        margin: 10px 0;
+        border: 1px solid rgba(255,255,255,0.1);
+        color: white;
     }
+
+    /* INPUT BOX */
+    [data-testid="stChatInput"] {
+        background: rgba(255, 255, 255, 0.2)!important;
+        backdrop-filter: blur(15px);
+        border-radius: 25px!important;
+        padding: 10px 20px!important;
+        border: 1px solid rgba(255,255,255,0.3);
+        color: white!important;
+    }
+    [data-testid="stChatInput"] input { color: white!important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -44,38 +82,12 @@ if "messages" not in st.session_state:
 if "mode" not in st.session_state:
     st.session_state.mode = "AI Chat"
 
-def set_mode(mode, prompt):
-    st.session_state.mode = mode
-    st.session_state.input_text = prompt
-
-# SIDEBAR WITH ROBOT
-with st.sidebar:
-    st.title("🤖 Zaidiii AI")
-    st.caption("Your Smart Assistant")
-    
-    if st.button("💬 AI Chat", use_container_width=True):
-        set_mode("AI Chat", "")
-    if st.button("📝 Write Copy", use_container_width=True):
-        set_mode("Write Copy", "Write marketing copy for: ")
-    if st.button("🖼️ Image Prompt", use_container_width=True):
-        set_mode("Image Prompt", "Describe an image of: ")
-    if st.button("💻 Write Code", use_container_width=True):
-        set_mode("Write Code", "Write Python code for: ")
-    if st.button("📊 Data Analysis", use_container_width=True):
-        set_mode("Data Analysis", "Analyze this data: ")
-    if st.button("✍️ Write Story", use_container_width=True):
-        set_mode("Write Story", "Write a story about: ")
-    
-    st.divider()
-    if st.button("⚙️ Settings", use_container_width=True):
-        set_mode("Settings", "")
-
-# MAIN WELCOME
+# WELCOME
 st.markdown(f"""
 <div class="welcome-box">
     <h1>🤖 Welcome to Zaidiii</h1>
-    <p><b>Active Mode: {st.session_state.mode}</b></p>
-    <p>Ask me anything and I'll help you!</p>
+    <p><b>Mode: {st.session_state.mode}</b></p>
+    <p>Ask me anything janiii ❤️</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -84,28 +96,12 @@ for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
 
 # INPUT
-if "input_text" not in st.session_state:
-    st.session_state.input_text = ""
-
-if prompt := st.chat_input(f"Ask Zaidiii in {st.session_state.mode} mode..."):
-    full_prompt = prompt
-    
-    if st.session_state.mode == "Write Copy":
-        full_prompt = "Act as a professional copywriter. " + prompt
-    elif st.session_state.mode == "Write Code":
-        full_prompt = "Act as an expert programmer. Give clean code with comments. " + prompt
-    elif st.session_state.mode == "Image Prompt":
-        full_prompt = "Describe this image in detail for AI image generation: " + prompt
-    elif st.session_state.mode == "Data Analysis":
-        full_prompt = "Act as a data analyst. " + prompt
-    elif st.session_state.mode == "Write Story":
-        full_prompt = "Act as a creative storyteller. " + prompt
-    
-    st.session_state.messages.append({"role": "user", "content": full_prompt})
+if prompt := st.chat_input(f"Zaidiii se poocho..."):
+    st.session_state.messages.append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
 
     with st.chat_message("assistant"):
-        with st.spinner("🤖 Zaidiii soch rahi hai..."):
+        with st.spinner("🤖 Soch rahi hun..."):
             response = client.chat.completions.create(
                 model="llama-3.1-8b-instant",
                 messages=st.session_state.messages
