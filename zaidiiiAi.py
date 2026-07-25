@@ -1,62 +1,32 @@
 import streamlit as st
-import google.generativeai as genai
-from PIL import Image
-import io
+from groq import Groq
 
-st.set_page_config(page_title="Zaidiii AI", page_icon="💬", layout="wide")
+st.set_page_config(page_title="Zaidiii AI", page_icon="💬")
+st.title("💬 Zaidiii AI - Full Free + Fast")
 
-st.markdown("""
-<style>
-    .stChatMessage {border-radius: 15px; padding: 10px;}
-    h1 {text-align: center; color: #4CAF50;}
-</style>
-""", unsafe_allow_html=True)
-
-st.title("💬 Zaidiii AI - Tumhari Apni ChatGPT")
-
-# API Key load
+# Groq API Key Secrets me lagani hai "GROQ_API_KEY" naam se
 try:
-    api_key = st.secrets["GOOGLE_API_KEY"]
-    genai.configure(api_key=api_key)
+    client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 except:
-    st.error("GOOGLE_API_KEY Secrets me nahi mili!")
+    st.error("GROQ_API_KEY Secrets me lagao")
     st.stop()
 
-# Auto model dhoondo jo tumhari key pe chale
-def get_working_model():
-    for model_name in ['gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-2.0-flash']:
-        try:
-            model = genai.GenerativeModel(model_name)
-            return model
-        except:
-            continue
-    return None
-
-# Chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        if message["type"] == "text":
-            st.write(message["content"])
+for msg in st.session_state.messages:
+    st.chat_message(msg["role"]).write(msg["content"])
 
-if prompt := st.chat_input("Zaidiii se kuch bhi poocho..."):
-
-    st.session_state.messages.append({"role": "user", "type": "text", "content": prompt})
-    with st.chat_message("user"):
-        st.write(prompt)
+if prompt := st.chat_input("Poocho janiii..."):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    st.chat_message("user").write(prompt)
 
     with st.chat_message("assistant"):
-        with st.spinner("Soch rahi hun janiii..."):
-            model = get_working_model()
-            
-            if model is None:
-                st.error("Tumhari API key pe koi model nahi chal raha. AI Studio me jaake 'Enable Gemini API' karo.")
-            else:
-                try:
-                    response = model.generate_content(prompt)
-                    st.write(response.text)
-                    st.session_state.messages.append({"role": "assistant", "type": "text", "content": response.text})
-                except Exception as e:
-                    st.error(f"Error: {e}")
+        with st.spinner("Soch rahi..."):
+            response = client.chat.completions.create(
+                model="llama-3.1-8b-instant",
+                messages=st.session_state.messages
+            )
+            reply = response.choices[0].message.content
+            st.write(reply)
+            st.session_state.messages.append({"role": "assistant", "content": reply})
