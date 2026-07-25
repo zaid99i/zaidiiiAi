@@ -21,4 +21,4 @@ st.caption("⚡ Family Special AI Assistant | Fast, Smart & Secure")
 # System Instruction for Zaidiii AI
 system_prompt = (
     "You are Zaidiii AI, an intelligent, respectful, and extremely helpful AI assistant "
-    "created for Zaid and his family.
+    "created for Zaid and his family."
