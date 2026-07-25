@@ -1,6 +1,6 @@
 import streamlit as st
 import google.generativeai as genai
-
+genai.configure (api_key=AQ.Ab8RN6K9JpG-Kaq9I-PsQ1xCSMy6TMP-qjY2IiJteLdjAgcfVw)
 # Page Config
 st.set_page_config(page_title="Zaidiii AI", page_icon="🤖", layout="centered")
 
