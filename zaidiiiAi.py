@@ -1,23 +1,23 @@
 import streamlit as st
 from groq import Groq
 
-st.set_page_config(page_title="Zaidiii AI", page_icon="🤖", layout="wide")
+st.set_page_config(page_title="Zaidiii", page_icon="🤖", layout="wide")
 
 # AESTHETIC BACKGROUND
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     html, body, [class*="st"] { font-family: 'Inter', sans-serif; }
-    
- .main {
+
+.main {
         background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
     }
-    
+
     [data-testid="stSidebar"] {
         background: rgba(255, 255, 255, 0.9);
         backdrop-filter: blur(10px);
     }
-    
+
 .welcome-box {
         background: rgba(255, 255, 255, 0.8);
         backdrop-filter: blur(15px);
@@ -43,8 +43,6 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 if "mode" not in st.session_state:
     st.session_state.mode = "AI Chat"
-if "input_text" not in st.session_state:
-    st.session_state.input_text = ""
 
 def set_mode(mode, prompt):
     st.session_state.mode = mode
@@ -86,6 +84,9 @@ for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
 
 # INPUT
+if "input_text" not in st.session_state:
+    st.session_state.input_text = ""
+
 if prompt := st.chat_input(f"Ask Zaidiii in {st.session_state.mode} mode..."):
     full_prompt = prompt
     
