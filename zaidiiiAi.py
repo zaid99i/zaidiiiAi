@@ -37,5 +37,4 @@ if prompt := st.chat_input("Zaidiii se poocho..."):
                 st.write(response.text)
                 st.session_state.messages.append({"role": "assistant", "content": response.text})
             except Exception as e:
-                st.error(f"Chat ka Error: {e}")
-                st.info("Hal: 1. Key nayi banao 2. 2 min wait karo 3. `gemini-pro` se `gemini-1.0-pro` try karo")
+                
