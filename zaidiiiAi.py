@@ -37,4 +37,7 @@ if prompt := st.chat_input("Zaidiii se poocho..."):
                 st.write(response.text)
                 st.session_state.messages.append({"role": "assistant", "content": response.text})
             except Exception as e:
-                
+             File "/mount/src/zaidiiiai/zaidiiiAi.py", 
+  
+                  ^
+
