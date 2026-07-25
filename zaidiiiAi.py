@@ -1,37 +1,48 @@
 import streamlit as st
 import google.generativeai as genai
 
-# Configure API Key from Secrets - SECURE
+# Page setup
+st.set_page_config(page_title="Zaidiii AI", page_icon="🤖", layout="centered")
+st.title("🤖 Zaidiii AI")
+st.caption("Tumhari Family Special AI Assistant | ChatGPT Style")
+
+# API Key connect
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 
-st.set_page_config(page_title="Zaidiii AI", page_icon="🤖", layout="centered")
+# Chat history ke liye
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-# Custom Styling (Dark Theme)
-st.markdown("""
-    <style>
-    .main { background-color: #0e1117; }
-    h1 { color: #00d4ff; text-align: center; font-weight: 700; }
-    .stChatMessage { border-radius: 12px; margin-bottom: 8px; }
-    </style>
-""", unsafe_allow_html=True)
+# Sidebar - Clear Chat ka button
+with st.sidebar:
+    st.header("Settings")
+    if st.button("🗑️ Nayi Chat Shuru Karo"):
+        st.session_state.messages = []
+        st.rerun()
 
-st.title("🤖 Zaidiii AI")
-st.caption("⚡ Family Special AI Assistant | Fast, Smart & Secure")
+# Pehle wali chat dikhao
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
-# System Instruction for Zaidiii AI
-system_prompt = (
-    "You are Zaidiii AI, an intelligent, respectful, and extremely helpful AI assistant "
-    "created for Zaid and his family.")
-# Chat input box
-prompt = st.chat_input("Zaidiii se kuch bhi poocho...")
-
-if prompt:
-    # User ka message dikhao
-    st.chat_message("user").write(prompt)
+# Naya sawal wala box
+if prompt := st.chat_input("Zaidiii se kuch bhi poocho..."):
     
-    # Gemini se jawab lao
-    model = genai.GenerativeModel('gemini-1.5-flash')
-    response = model.generate_content(prompt)
-    
-    # AI ka jawab dikhao
-    st.chat_message("assistant").write(response.text)
+    # User ka message add karo
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # AI ka jawab
+    with st.chat_message("assistant"):
+        with st.spinner("Zaidiii soch rahi hai..."):
+            try:
+                model = genai.GenerativeModel('gemini-1.0-pro')
+                response = model.generate_content(prompt)
+                st.markdown(response.text)
+                
+                # AI ka jawab bhi save karo
+                st.session_state.messages.append({"role": "assistant", "content": response.text})
+                
+            except Exception as e:
+                st.error(f"Masla aa gaya: {e}")
