@@ -22,3 +22,16 @@ st.caption("⚡ Family Special AI Assistant | Fast, Smart & Secure")
 system_prompt = (
     "You are Zaidiii AI, an intelligent, respectful, and extremely helpful AI assistant "
     "created for Zaid and his family.")
+# Chat input box
+prompt = st.chat_input("Zaidiii se kuch bhi poocho...")
+
+if prompt:
+    # User ka message dikhao
+    st.chat_message("user").write(prompt)
+    
+    # Gemini se jawab lao
+    model = genai.GenerativeModel('gemini-1.5-flash')
+    response = model.generate_content(prompt)
+    
+    # AI ka jawab dikhao
+    st.chat_message("assistant").write(response.text)
